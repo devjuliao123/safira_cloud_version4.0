@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .utils import get_tenant_cursor, dictfetchall, dictfetchone
+from .utils import get_tenant_cursor, dictfetchall, dictfetchone, execute_paginated_query
 from django.contrib import messages
 from datetime import datetime
 
 @login_required
 def pessoa_list(request):
-    from .utils import execute_paginated_query
-
     search_query = request.GET.get('q', '')
     filtro_tipo = request.GET.get('tipo', '')
     page_number = request.GET.get('page', 1)
@@ -144,6 +144,28 @@ def pessoa_edit(request, pk):
         return redirect('pessoas')
 
     return render(request, 'core/pessoa_form.html', {'pessoa': pessoa, 'action': 'Editar'})
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('menu')
+
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                next_url = request.GET.get('next', 'menu')
+                return redirect(next_url)
+    else:
+        form = AuthenticationForm()
+    return render(request, 'core/login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 def placeholder(request):
     return render(request, 'core/placeholder.html')

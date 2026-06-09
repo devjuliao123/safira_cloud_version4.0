@@ -5,6 +5,8 @@ from core import views as core_views
 
 urlpatterns = [
     path("", lambda request: redirect("menu/")),
+    path("login/", core_views.login_view, name="login"),
+    path("logout/", core_views.logout_view, name="logout"),
     path("admin/", admin.site.urls),
     path("menu/", include("menu.urls")),
 
