@@ -3,12 +3,10 @@ from django.db import connection
 def get_tenant_schema(request):
     """
     Returns the schema for the authenticated user's organization.
+    Temporarily returns 'org_0001' as requested.
     """
     if request.user.is_authenticated:
-        try:
-            return request.user.organization_profile.organizacao.schema
-        except Exception:
-            return 'public'
+        return 'org_0001'
     return 'public'
 
 def get_tenant_cursor(request):
