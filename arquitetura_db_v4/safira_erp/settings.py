@@ -77,7 +77,7 @@ WSGI_APPLICATION = "safira_erp.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "db_safira_softwares",
+        "NAME": "homologacao_safira_softwares",
         "USER": "postgres",
         "PASSWORD": "xbala",
         "HOST": "localhost",
