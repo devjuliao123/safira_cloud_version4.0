@@ -1,3 +1,13 @@
+CREATE TABLE tbl_usuarios (
+    id SERIAL PRIMARY KEY,
+    usuario VARCHAR(50) NOT NULL,
+    senha VARCHAR(100) NOT NULL,
+    ativo BOOLEAN DEFAULT TRUE,
+    criado_em TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO tbl_usuarios (usuario, senha) VALUES ('user adm', 'senha adm');
+
 CREATE TABLE tbl_empresas (
     id SERIAL PRIMARY KEY,
     razao_social VARCHAR(150),
