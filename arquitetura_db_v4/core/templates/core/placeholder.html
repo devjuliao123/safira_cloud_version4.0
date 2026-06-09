@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Em Desenvolvimento{% endblock %}
+
+{% block content %}
+<div class="placeholder-container">
+    <div class="placeholder-card">
+        <i class="fas fa-hammer placeholder-icon"></i>
+        <h1>Módulo em Desenvolvimento</h1>
+        <p>Estamos trabalhando para trazer esta funcionalidade para você em breve.</p>
+        <a href="/dashboard" class="btn btn-primary">Voltar ao Dashboard</a>
+    </div>
+</div>
+
+<style>
+    .placeholder-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+    }
+    .placeholder-card {
+        background: white;
+        padding: 3rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 500px;
+        width: 100%;
+    }
+    .placeholder-icon {
+        font-size: 4rem;
+        color: #2563EB;
+        margin-bottom: 1.5rem;
+    }
+    .placeholder-card h1 {
+        color: #0F172A;
+        margin-bottom: 1rem;
+    }
+    .placeholder-card p {
+        color: #64748b;
+        margin-bottom: 2rem;
+    }
+    .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.2s;
+    }
+    .btn-primary {
+        background-color: #2563EB;
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #1d4ed8;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safira ERP - {% block title %}Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-gem"></i>
+                    <span class="logo-text">Safira Cloud</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="/menu" class="nav-link">
+                            <i class="fas fa-th-large"></i>
+                            <span class="link-text">Menu Principal</span>
+                        </a>
+                    </li>
+
+
+                    <li class="nav-group">
+                        <div class="group-title">Cadastros</div>
+                        <ul>
+                            <li><a href="/empresas" class="nav-link"><i class="fas fa-building"></i><span class="link-text">Empresas</span></a></li>
+                            <li><a href="/pessoas" class="nav-link"><i class="fas fa-users"></i><span class="link-text">Pessoas</span></a></li>
+                            <li><a href="/usuarios" class="nav-link"><i class="fas fa-user-shield"></i><span class="link-text">Usuários</span></a></li>
+                            <li><a href="/cargos" class="nav-link"><i class="fas fa-user-tag"></i><span class="link-text">Cargos</span></a></li>
+                            <li><a href="/permissoes" class="nav-link"><i class="fas fa-key"></i><span class="link-text">Permissões</span></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-group">
+                        <div class="group-title">CRM</div>
+                        <ul>
+                            <li><a href="/leads" class="nav-link"><i class="fas fa-user-plus"></i><span class="link-text">Leads</span></a></li>
+                            <li><a href="/interacoes" class="nav-link"><i class="fas fa-comments"></i><span class="link-text">Interações</span></a></li>
+                            <li><a href="/oportunidades" class="nav-link"><i class="fas fa-lightbulb"></i><span class="link-text">Oportunidades</span></a></li>
+                            <li><a href="/orcamentos" class="nav-link"><i class="fas fa-file-invoice-dollar"></i><span class="link-text">Orçamentos</span></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-group">
+                        <div class="group-title">Veículos</div>
+                        <ul>
+                            <li><a href="/marcas" class="nav-link"><i class="fas fa-tags"></i><span class="link-text">Marcas</span></a></li>
+                            <li><a href="/modelos" class="nav-link"><i class="fas fa-car-side"></i><span class="link-text">Modelos</span></a></li>
+                            <li><a href="/veiculos" class="nav-link"><i class="fas fa-car"></i><span class="link-text">Veículos</span></a></li>
+                            <li><a href="/historico-veiculo" class="nav-link"><i class="fas fa-history"></i><span class="link-text">Histórico</span></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-group">
+                        <div class="group-title">Oficina</div>
+                        <ul>
+                            <li><a href="/agendamentos" class="nav-link"><i class="fas fa-calendar-alt"></i><span class="link-text">Agendamentos</span></a></li>
+                            <li><a href="/ordens-servico" class="nav-link"><i class="fas fa-tools"></i><span class="link-text">Ordens de Serviço</span></a></li>
+                            <li><a href="/checklists" class="nav-link"><i class="fas fa-clipboard-check"></i><span class="link-text">Checklists</span></a></li>
+                            <li><a href="/garantias" class="nav-link"><i class="fas fa-shield-alt"></i><span class="link-text">Garantias</span></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-group">
+                        <div class="group-title">Estoque</div>
+                        <ul>
+                            <li><a href="/categorias" class="nav-link"><i class="fas fa-th-list"></i><span class="link-text">Categorias</span></a></li>
+                            <li><a href="/produtos" class="nav-link"><i class="fas fa-box"></i><span class="link-text">Produtos</span></a></li>
+                            <li><a href="/fornecedores" class="nav-link"><i class="fas fa-truck"></i><span class="link-text">Fornecedores</span></a></li>
+                            <li><a href="/depositos" class="nav-link"><i class="fas fa-warehouse"></i><span class="link-text">Depósitos</span></a></li>
+                            <li><a href="/estoque" class="nav-link"><i class="fas fa-boxes"></i><span class="link-text">Estoque</span></a></li>
+                            <li><a href="/movimentacoes" class="nav-link"><i class="fas fa-exchange-alt"></i><span class="link-text">Movimentações</span></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-group">
+                        <div class="group-title">Operacional</div>
+                        <ul>
+                            <li><a href="/compras" class="nav-link"><i class="fas fa-shopping-cart"></i><span class="link-text">Compras</span></a></li>
+                            <li><a href="/vendas" class="nav-link"><i class="fas fa-cash-register"></i><span class="link-text">Vendas</span></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-group">
+                        <div class="group-title">Financeiro</div>
+                        <ul>
+                            <li><a href="/contas-receber" class="nav-link"><i class="fas fa-hand-holding-usd"></i><span class="link-text">Contas a Receber</span></a></li>
+                            <li><a href="/contas-pagar" class="nav-link"><i class="fas fa-file-invoice"></i><span class="link-text">Contas a Pagar</span></a></li>
+                            <li><a href="/caixa" class="nav-link"><i class="fas fa-wallet"></i><span class="link-text">Caixa</span></a></li>
+                            <li><a href="/movimentacoes-financeiras" class="nav-link"><i class="fas fa-money-bill-wave"></i><span class="link-text">Movimentações</span></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-group">
+                        <div class="group-title">Administração</div>
+                        <ul>
+                            <li><a href="/configuracoes" class="nav-link"><i class="fas fa-cog"></i><span class="link-text">Configurações</span></a></li>
+                            <li><a href="/logs" class="nav-link"><i class="fas fa-list-alt"></i><span class="link-text">Logs</span></a></li>
+                            <li><a href="/auditoria" class="nav-link"><i class="fas fa-search"></i><span class="link-text">Auditoria</span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <!-- Header -->
+            <header class="header">
+                <button id="sidebar-toggle" class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <span class="user-name">Usuário Safira</span>
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="content">
+                {% block content %}
+                {% endblock %}
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>&copy; 2024 Safira Cloud - Todos os direitos reservados.</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="{% static 'js/menu.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão ERP | Safira Softwares</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .bg-grid { background-size: 20px 20px; background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px); }
+        
+        /* Animação personalizada para a nuvem flutuar suavemente */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-cloud-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Customização elegante para a barra de rolagem interna */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen bg-grid p-6">
+
+    <div class="max-w-5xl mx-auto space-y-8">
+        
+        <header class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div>
+                <h1 class="text-2xl font-bold text-blue-600 flex items-center gap-2">
+                    <i data-lucide="cloud" class="w-8 h-8 text-blue-600 fill-blue-600 animate-cloud-float"></i>
+                    Safira <span class="text-slate-400 font-light">Cloud</span>
+                </h1>
+            </div>
+            <div class="text-right">
+                <span id="totalOrgs" class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    Carregando...
+                </span>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-5 h-5 text-blue-500"></i>
+                        Nova Organização
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Próximo Schema</label>
+                            <input type="text" id="numero_display" value="Buscando..." readonly
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-blue-600 font-mono text-sm outline-none cursor-not-allowed">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Nome da Unidade</label>
+                            <input type="text" id="nome" placeholder="Ex: Matriz São Paulo"
+                                class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
+                        </div>
+
+                        <button onclick="criar()" id="btnCriar"
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-200">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                            Inserir
+                        </button>
+                    </div>
+
+                    <div id="statusContainer" class="hidden mt-4 p-4 rounded-lg border text-sm animate-pulse">
+                        <p id="msgHeader" class="font-bold"></p>
+                        <p id="msgBody" class="text-xs"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[380px]">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white z-10">
+                        <h2 class="text-lg font-semibold flex items-center gap-2">
+                            <i data-lucide="layout-grid" class="w-5 h-5 text-blue-500"></i>
+                            Organizações
+                        </h2>
+                        <button onclick="listarOrgs()" class="text-slate-400 hover:text-blue-600 transition-colors">
+                            <i data-lucide="rotate-cw" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <div class="overflow-y-auto overflow-x-auto flex-1 custom-scrollbar">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="sticky top-0 bg-slate-50 shadow-sm z-10">
+                                <tr>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">ID / Schema</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Nome da Organização</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gridBody" class="divide-y divide-slate-100">
+                            </tbody>
+                        </table>
+                        
+                        <div id="emptyState" class="hidden p-12 text-center text-slate-400">
+                            <i data-lucide="database" class="w-12 h-12 mx-auto mb-3 opacity-20"></i>
+                            <p>Nenhuma organização encontrada no banco.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        window.onload = function() {
+            listarOrgs();
+            atualizarProximoId();
+        };
+
+        async function atualizarProximoId() {
+            try {
+                const res = await fetch("/proximo-id");
+                const data = await res.json();
+                if (data.sucesso) {
+                    document.getElementById("numero_display").value = data.proximo;
+                }
+            } catch (e) {
+                document.getElementById("numero_display").value = "Erro ao buscar";
+            }
+        }
+
+        async function listarOrgs() {
+            const grid = document.getElementById("gridBody");
+            const emptyState = document.getElementById("emptyState");
+            grid.innerHTML = `<tr><td colspan="3" class="p-6 text-center text-slate-400 italic">Sincronizando com o banco de dados...</td></tr>`;
+            emptyState.classList.add("hidden");
+            
+            try {
+                const res = await fetch("/organizacoes");
+                const data = await res.json();
+                
+                if (data.length === 0) {
+                    grid.innerHTML = "";
+                    emptyState.classList.remove("hidden");
+                    document.getElementById("totalOrgs").innerText = `0 Organizações`;
+                    return;
+                }
+
+                grid.innerHTML = "";
+                data.forEach(org => {
+                    grid.innerHTML += `
+                        <tr class="hover:bg-blue-50/50 transition-colors">
+                            <td class="px-6 py-4 font-mono text-xs text-blue-600 font-semibold">${org.schema}</td>
+                            <td class="px-6 py-4 text-sm font-medium text-slate-700">${org.nome}</td>
+                            <td class="px-6 py-4">
+                                <span class="flex items-center gap-1.5 text-emerald-600 text-xs font-bold">
+                                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                                    ATIVO
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                });
+                document.getElementById("totalOrgs").innerText = `${data.length} Organizações`;
+            } catch (e) {
+                grid.innerHTML = "";
+                emptyState.classList.remove("hidden");
+                document.getElementById("totalOrgs").innerText = `0 Organizações`;
+            }
+            lucide.createIcons();
+        }
+
+        async function criar() {
+            const btn = document.getElementById("btnCriar");
+            const nome = document.getElementById("nome").value;
+            const container = document.getElementById("statusContainer");
+            
+            if (!nome) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Criando...`;
+            lucide.createIcons();
+
+            try {
+                const res = await fetch("/criar-organizacao", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nome })
+                });
+
+                const data = await res.json();
+
+                if (data.status === "ok") {
+                    container.className = "mt-4 p-4 rounded-lg border bg-emerald-50 border-emerald-200 text-emerald-700 block";
+                    document.getElementById("msgHeader").innerText = "Sucesso!";
+                    document.getElementById("msgBody").innerText = `Instância ${data.schema} pronta.`;
+                    document.getElementById("nome").value = "";
+                    
+                    listarOrgs(); 
+                    atualizarProximoId();
+                } else {
+                    throw new Error(data.mensagem);
+                }
+            } catch (err) {
+                container.className = "mt-4 p-4 rounded-lg border bg-red-50 border-red-200 text-red-700 block";
+                document.getElementById("msgHeader").innerText = "Erro";
+                document.getElementById("msgBody").innerText = err.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="zap" class="w-4 h-4"></i> Inserir`;
+                lucide.createIcons();
+            }
+        }
+    </script>
+</body>
+</html>
