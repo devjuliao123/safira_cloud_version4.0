@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from core.utils import session_login_required
 
-@login_required
+@session_login_required
 def index(request):
     return render(request, 'menu/index.html')

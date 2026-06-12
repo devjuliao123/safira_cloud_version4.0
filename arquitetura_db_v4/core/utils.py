@@ -1,20 +1,30 @@
 from django.db import connection
+from django.shortcuts import redirect
+from functools import wraps
+
+def session_login_required(view_func):
+    """
+    Decorator that checks if 'usuario_id' is in session.
+    Replaces Django's @login_required.
+    """
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.session.get('usuario_id'):
+            return redirect('login')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 def get_tenant_schema(request):
     """
-    Returns the schema for the authenticated user's organization.
+    Returns the schema for the authenticated user's organization from session.
+    Falls back to 'public' if not found.
     """
-    if request.user.is_authenticated:
-        try:
-            return request.user.organization_profile.organizacao.schema
-        except Exception:
-            return 'public'
-    return 'public'
+    return request.session.get('tenant_schema', 'public')
 
 def get_tenant_cursor(request):
     """
     Returns a database cursor with the search_path set to the user's organization schema.
-    Ensure public is always included for Django system tables.
+    Ensure public is always included for shared tables.
     """
     schema = get_tenant_schema(request)
     cursor = connection.cursor()

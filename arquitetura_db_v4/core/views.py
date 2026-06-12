@@ -1,13 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .utils import get_tenant_cursor, dictfetchall, dictfetchone, execute_paginated_query
+from .utils import get_tenant_cursor, dictfetchall, dictfetchone, execute_paginated_query, session_login_required
 from django.contrib import messages
 from datetime import datetime
 
-@login_required
+@session_login_required
 def pessoa_list(request):
     search_query = request.GET.get('q', '')
     filtro_tipo = request.GET.get('tipo', '')
@@ -31,11 +28,6 @@ def pessoa_list(request):
         request, base_query, params, page_number, per_page
     )
 
-    # We still use Paginator but with a dummy object to help the template
-    # Or we can just build the pagination object manually for the template
-    # Since I already wrote the template expecting the Paginator object style,
-    # I'll adapt the data back to a Paginator-like object.
-
     paginator = Paginator(range(total_count), per_page)
     try:
         page_obj = paginator.page(page_number)
@@ -44,7 +36,6 @@ def pessoa_list(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    # Override page_obj.object_list with our actual data from SQL
     page_obj.object_list = pessoas_list
 
     context = {
@@ -55,7 +46,7 @@ def pessoa_list(request):
     }
     return render(request, 'core/pessoa_list.html', context)
 
-@login_required
+@session_login_required
 def pessoa_detail(request, pk):
     with get_tenant_cursor(request) as cursor:
         cursor.execute("SELECT * FROM tbl_pessoas WHERE id = %s", [pk])
@@ -67,7 +58,7 @@ def pessoa_detail(request, pk):
 
     return render(request, 'core/pessoa_detail.html', {'pessoa': pessoa})
 
-@login_required
+@session_login_required
 def pessoa_delete(request, pk):
     with get_tenant_cursor(request) as cursor:
         cursor.execute("DELETE FROM tbl_pessoas WHERE id = %s", [pk])
@@ -75,7 +66,7 @@ def pessoa_delete(request, pk):
     messages.success(request, "Pessoa excluída com sucesso.")
     return redirect('pessoas')
 
-@login_required
+@session_login_required
 def pessoa_create(request):
     if request.method == 'POST':
         data = {
@@ -106,7 +97,7 @@ def pessoa_create(request):
 
     return render(request, 'core/pessoa_form.html', {'action': 'Inserir'})
 
-@login_required
+@session_login_required
 def pessoa_edit(request, pk):
     with get_tenant_cursor(request) as cursor:
         cursor.execute("SELECT * FROM tbl_pessoas WHERE id = %s", [pk])
@@ -146,25 +137,41 @@ def pessoa_edit(request, pk):
     return render(request, 'core/pessoa_form.html', {'pessoa': pessoa, 'action': 'Editar'})
 
 def login_view(request):
-    if request.user.is_authenticated:
+    if request.session.get('usuario_id'):
         return redirect('menu')
 
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                next_url = request.GET.get('next', 'menu')
-                return redirect(next_url)
-    else:
-        form = AuthenticationForm()
-    return render(request, 'core/login.html', {'form': form})
+        usuario_input = request.POST.get('username')
+        senha_input = request.POST.get('password')
+
+        # Consulta direta na tbl_usuarios no schema public
+        with get_tenant_cursor(request) as cursor:
+            # Forçamos public para o login
+            cursor.execute('SET search_path TO public')
+            cursor.execute("SELECT * FROM tbl_usuarios WHERE usuario = %s AND senha = %s AND ativo = TRUE", [usuario_input, senha_input])
+            user = dictfetchone(cursor)
+
+        if user:
+            # Cria a sessão manual
+            request.session['usuario_id'] = user['id']
+            request.session['usuario_nome'] = user['usuario']
+
+            # Busca a organização vinculada no schema public
+            with get_tenant_cursor(request) as cursor:
+                cursor.execute('SET search_path TO public')
+                # Assumimos que o usuário 1 é da org_0001 temporariamente para manter compatibilidade
+                request.session['tenant_schema'] = 'org_0001'
+
+            next_url = request.GET.get('next', 'menu')
+            return redirect(next_url)
+        else:
+            messages.error(request, "Usuário ou senha incorretos ou conta inativa.")
+
+    return render(request, 'core/login.html')
 
 def logout_view(request):
-    logout(request)
+    # Limpa a sessão manual
+    request.session.flush()
     return redirect('login')
 
 def placeholder(request):
