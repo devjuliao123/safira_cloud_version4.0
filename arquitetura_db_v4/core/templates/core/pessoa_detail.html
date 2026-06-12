@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Visualizar Pessoa{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <ul>
+            <li>Utilitários</li>
+            <li>Tabelas Gerais</li>
+            <li>Pessoas</li>
+            <li>Pessoa</li>
+            <li class="active">Visualizar</li>
+        </ul>
+    </nav>
+
+    <div class="detail-container">
+        <div class="detail-header">
+            <h2>{{ pessoa.nome_razao }}</h2>
+            <div class="header-actions">
+                <a href="{% url 'pessoa_edit' pessoa.id %}" class="btn btn-primary"><i class="fas fa-edit"></i> Editar</a>
+                <a href="{% url 'pessoas' %}" class="btn btn-secondary">Voltar</a>
+            </div>
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="label">ID</span>
+                <span class="value">{{ pessoa.id }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Tipo de Pessoa</span>
+                <span class="value">{{ pessoa.tipo_pessoa }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Nome / Razão Social</span>
+                <span class="value">{{ pessoa.nome_razao }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Apelido / Fantasia</span>
+                <span class="value">{{ pessoa.apelido_fantasia|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">CPF / CNPJ</span>
+                <span class="value">{{ pessoa.cpf_cnpj }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Tipo de Contribuinte</span>
+                <span class="value">{{ pessoa.tipo_contribuinte|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Inscrição Estadual</span>
+                <span class="value">{{ pessoa.inscricao_estadual|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Telefone</span>
+                <span class="value">{{ pessoa.telefone|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Email</span>
+                <span class="value">{{ pessoa.email|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Cidade</span>
+                <span class="value">{{ pessoa.cidade|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Estado</span>
+                <span class="value">{{ pessoa.estado|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Relação Comercial</span>
+                <span class="value">{{ pessoa.relacao_comercial|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Cargo</span>
+                <span class="value">{{ pessoa.cargo|default:"-" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Criado em</span>
+                <span class="value">{{ pessoa.criado_em|date:"d/m/Y H:i" }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .detail-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 2rem;
+    }
+    .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 1rem;
+    }
+    .header-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    .detail-item .label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #64748b;
+        font-weight: 700;
+        letter-spacing: 0.025em;
+    }
+    .detail-item .value {
+        font-size: 1rem;
+        color: #0F172A;
+    }
+    .btn-secondary { background: #64748b; color: white; }
+</style>
+{% endblock %}

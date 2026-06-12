@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}{{ action }} Pessoa{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <ul>
+            <li>Utilitários</li>
+            <li>Tabelas Gerais</li>
+            <li>Pessoas</li>
+            <li>Pessoa</li>
+            <li class="active">{{ action }}</li>
+        </ul>
+    </nav>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h2>{{ action }} Pessoa</h2>
+        </div>
+
+        <form method="post" class="data-form">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Tipo de Pessoa</label>
+                    <select name="tipo_pessoa" required>
+                        <option value="F" {% if pessoa.tipo_pessoa == 'F' %}selected{% endif %}>Física</option>
+                        <option value="J" {% if pessoa.tipo_pessoa == 'J' %}selected{% endif %}>Jurídica</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Nome / Razão Social</label>
+                    <input type="text" name="nome_razao" value="{{ pessoa.nome_razao|default:'' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Apelido / Fantasia</label>
+                    <input type="text" name="apelido_fantasia" value="{{ pessoa.apelido_fantasia|default:'' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>CPF / CNPJ</label>
+                    <input type="text" name="cpf_cnpj" value="{{ pessoa.cpf_cnpj|default:'' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Contribuinte</label>
+                    <input type="number" name="tipo_contribuinte" value="{{ pessoa.tipo_contribuinte|default:'' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Inscrição Estadual</label>
+                    <input type="text" name="inscricao_estadual" value="{{ pessoa.inscricao_estadual|default:'' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="text" name="telefone" value="{{ pessoa.telefone|default:'' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ pessoa.email|default:'' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Cidade</label>
+                    <input type="text" name="cidade" value="{{ pessoa.cidade|default:'' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Estado</label>
+                    <input type="text" name="estado" value="{{ pessoa.estado|default:'' }}" maxlength="2">
+                </div>
+
+                <div class="form-group">
+                    <label>Relação Comercial</label>
+                    <input type="text" name="relacao_comercial" value="{{ pessoa.relacao_comercial|default:'' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Cargo</label>
+                    <input type="text" name="cargo" value="{{ pessoa.cargo|default:'' }}">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <a href="{% url 'pessoas' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .form-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 2rem;
+    }
+    .form-header {
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 1rem;
+    }
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .form-group label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #64748b;
+    }
+    .form-group input, .form-group select {
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        outline: none;
+    }
+    .form-actions {
+        margin-top: 2.5rem;
+        display: flex;
+        gap: 1rem;
+        border-top: 1px solid #f1f5f9;
+        padding-top: 2rem;
+    }
+    .btn-secondary { background: #64748b; color: white; }
+</style>
+{% endblock %}

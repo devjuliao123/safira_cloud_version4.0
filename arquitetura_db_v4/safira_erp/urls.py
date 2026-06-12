@@ -5,13 +5,20 @@ from core import views as core_views
 
 urlpatterns = [
     path("", lambda request: redirect("menu/")),
+    path("login/", core_views.login_view, name="login"),
+    path("logout/", core_views.logout_view, name="logout"),
     path("admin/", admin.site.urls),
     path("menu/", include("menu.urls")),
 
     path("empresas", core_views.placeholder, name="empresas"),
 
     # Cadastros
-    path("pessoas", core_views.placeholder, name="pessoas"),
+    path("pessoas/", core_views.pessoa_list, name="pessoas"),
+    path("pessoas/novo/", core_views.pessoa_create, name="pessoa_create"),
+    path("pessoas/<int:pk>/", core_views.pessoa_detail, name="pessoa_detail"),
+    path("pessoas/<int:pk>/editar/", core_views.pessoa_edit, name="pessoa_edit"),
+    path("pessoas/<int:pk>/excluir/", core_views.pessoa_delete, name="pessoa_delete"),
+
     path("usuarios", core_views.placeholder, name="usuarios"),
     path("cargos", core_views.placeholder, name="cargos"),
     path("permissoes", core_views.placeholder, name="permissoes"),
