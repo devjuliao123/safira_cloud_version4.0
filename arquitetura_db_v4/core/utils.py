@@ -3,20 +3,21 @@ from django.db import connection
 def get_tenant_schema(request):
     """
     Returns the schema for the authenticated user's organization.
-    Temporarily returns 'org_0001' as requested.
     """
     if request.user.is_authenticated:
-        return 'org_0001'
+        try:
+            return request.user.organization_profile.organizacao.schema
+        except Exception:
+            return 'public'
     return 'public'
 
 def get_tenant_cursor(request):
     """
     Returns a database cursor with the search_path set to the user's organization schema.
+    Ensure public is always included for Django system tables.
     """
     schema = get_tenant_schema(request)
     cursor = connection.cursor()
-    # Identifiers like schema names cannot be parameterized in psycopg2,
-    # but since this comes from our trusted 'public.tbl_organizacoes' table, it's safe.
     cursor.execute(f'SET search_path TO "{schema}", public')
     return cursor
 
